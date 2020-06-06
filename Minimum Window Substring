@@ -4,3 +4,67 @@
 输入: S = "ADOBECODEBANC", T = "ABC"
 输出: "BANC"
 */
+
+/*
+思路：
+初始化窗口左右两个边界left = right = 0，窗口大小为[left,right)左闭右开区间
+移动right指针，不断扩大窗口，直到当前窗口满足要求即包含T中全部字符
+移动left指针，不断缩小窗口，并更新信息，直到当前窗口不满足要求
+然后继续移动right，再移动left，直到right移动到字符串末尾
+
+判断满足不满足要求，可以用不同的做法，这里用valid记录当前window中包含满足T中字符的有效个数，当valid与need大小一致时，即window中包含全部need中元素
+说明当前满足要求；也可以专门写个函数用于判断是否满足要求
+
+算法具体实现时考虑以下四个问题：
+1、移动right时，更新哪些信息
+2、何时停止移动right，开始移动left
+3、移动left时，又应该更新哪些信息
+4、应该在什么时候更新结果，是收缩窗口时还是扩大窗口时
+*/
+//实现代码如下：
+
+string minWindow(string s, string t){
+  unordered_map<char, int> need, window;
+  //记录T中所有信息
+  for(char c : t){
+    need[c]++;
+  }
+  
+  int left = 0, right = 0;  //窗口左右边界
+  int valid = 0;            //记录有效个数
+  int start = -1, minLen = INT_MAX;   //符合要求的子串的起始位置和最小长度
+  
+  while(right < (int)s.size()){
+    char c = s[right];  //获取将移入窗口的字符
+    right++;            //移动窗口右边界
+    
+    //更新窗口内数据
+    if(need.count(c)){
+      window[c]++;
+      if(window[c] == need[c]){
+        valid++;
+      }
+    }
+    
+    //判断是否需要收缩左边界
+    while(valid == (int)need.size()){
+      //更新结果信息
+      if(right - left < minLen){
+        start = left;
+        minLen = right - left;
+      }
+      
+      char r = s[left]  //获取要移出窗口的字符
+      left++;           //收缩窗口左边界
+      
+      //更新窗口内数据,这与扩大右边界时操作基本上是对称的
+      if(need.count(r)){
+        if(window[r] == need[r]){
+          valid--;
+        }
+        window[r]--;
+      }
+    }
+  }
+  return start == -1 ? "" : s.substr(start, minLen);
+}
