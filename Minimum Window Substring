@@ -1,5 +1,5 @@
 最小覆盖子串
-===
+
 给你一个字符串 S、一个字符串 T，请在字符串 S 里面找出：包含 T 所有字符的最小子串。
 示例：
 输入: S = "ADOBECODEBANC", T = "ABC"
@@ -19,10 +19,8 @@
 2、何时停止移动right，开始移动left
 3、移动left时，又应该更新哪些信息
 4、应该在什么时候更新结果，是收缩窗口时还是扩大窗口时
-*/
 
 实现代码如下
----
 
 string minWindow(string s, string t){
 	unordered_map<char, int> need, window;
